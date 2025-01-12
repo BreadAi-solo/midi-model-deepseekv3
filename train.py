@@ -311,11 +311,11 @@ if __name__ == '__main__':
     parser.add_argument(
         "--max-len",
         type=int,
-        default=2048,
+        default=8192,
         help="max seq length for training",
     )
     parser.add_argument(
-        "--quality", action="store_true", default=False, help="check dataset quality"
+        "--quality", action="store_true", default=True, help="check dataset quality"
     )
 
     # training args
@@ -332,10 +332,10 @@ if __name__ == '__main__':
         "--gen-example-interval", type=int, default=1, help="generate example interval. set 0 to disable"
     )
     parser.add_argument(
-        "--batch-size-train", type=int, default=2, help="batch size for training"
+        "--batch-size-train", type=int, default=4, help="batch size for training"
     )
     parser.add_argument(
-        "--batch-size-val", type=int, default=2, help="batch size for val"
+        "--batch-size-val", type=int, default=4, help="batch size for val"
     )
     parser.add_argument(
         "--batch-size-gen-example", type=int, default=8, help="batch size for generate example"
