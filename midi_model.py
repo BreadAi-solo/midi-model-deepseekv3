@@ -73,15 +73,17 @@ class MIDIModelConfig(PretrainedConfig):
                                  pad_token_id=tokenizer.pad_id,
                                  num_experts=16, 
                                  num_experts_per_tok=2,
-                                 max_position_embeddings=16384,
-                                 sliding_window=5120,
+                                 max_position_embeddings=8192,
+                                 sliding_window=4096,
                                  use_cache=False)
         net_token_config = LlamaConfig(vocab_size=tokenizer.vocab_size,
-                                       hidden_size=n_embd, num_attention_heads=n_head // 4,
-                                       num_hidden_layers=n_layer // 4, intermediate_size=n_inner // 4,
+                                       hidden_size=n_embd, num_attention_heads=n_head // 2,
+                                       num_hidden_layers=n_layer // 2, intermediate_size=n_inner // 2,
                                        pad_token_id=tokenizer.pad_id, 
-                                       max_position_embeddings=16384,
-                                       sliding_window=5120,
+                                       num_experts=8, 
+                                       num_experts_per_tok=1,
+                                       max_position_embeddings=8192,
+                                       sliding_window=4096,
                                        use_cache=False)
         return MIDIModelConfig(tokenizer, net_config, net_token_config)
 
