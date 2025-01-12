@@ -7,7 +7,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 import tqdm
 from peft import PeftConfig, LoraModel, load_peft_weights, set_peft_model_state_dict
-from transformers import LlamaModel, LlamaConfig, DynamicCache, PretrainedConfig, PreTrainedModel
+from transformers import PhimoeModel as LlamaModel 
+
+from transformers import PhimoeConfig as LlamaConfig
+
+from transformers import DynamicCache, PretrainedConfig, PreTrainedModel
 
 from midi_tokenizer import MIDITokenizerV1, MIDITokenizerV2, MIDITokenizer
 
@@ -60,18 +64,24 @@ class MIDIModelConfig(PretrainedConfig):
         return json.dumps(d, indent=4)
 
     @staticmethod
-    def get_config(tokenizer_ver="v2", optimise_midi=True, n_layer=12, n_head=16, n_embd=1024, n_inner=4096):
+    def get_config(tokenizer_ver="v2", optimise_midi=True, n_layer=6, n_head=16, n_embd=1024, n_inner=4096):
         tokenizer = MIDITokenizer(tokenizer_ver)
         tokenizer.set_optimise_midi(optimise_midi)
         net_config = LlamaConfig(vocab_size=tokenizer.vocab_size,
                                  hidden_size=n_embd, num_attention_heads=n_head,
                                  num_hidden_layers=n_layer, intermediate_size=n_inner,
-                                 pad_token_id=tokenizer.pad_id, max_position_embeddings=4096,
+                                 pad_token_id=tokenizer.pad_id,
+                                 num_experts=16, 
+                                 num_experts_per_tok=2,
+                                 max_position_embeddings=16384,
+                                 sliding_window=5120,
                                  use_cache=False)
         net_token_config = LlamaConfig(vocab_size=tokenizer.vocab_size,
                                        hidden_size=n_embd, num_attention_heads=n_head // 4,
                                        num_hidden_layers=n_layer // 4, intermediate_size=n_inner // 4,
-                                       pad_token_id=tokenizer.pad_id, max_position_embeddings=4096,
+                                       pad_token_id=tokenizer.pad_id, 
+                                       max_position_embeddings=16384,
+                                       sliding_window=5120,
                                        use_cache=False)
         return MIDIModelConfig(tokenizer, net_config, net_token_config)
 
@@ -88,7 +98,7 @@ class MIDIModelConfig(PretrainedConfig):
             raise ValueError(f"Unknown tokenizer version {tv}")
         if size == "medium":
             return MIDIModelConfig.get_config(tokenizer_ver=tv, optimise_midi=o,
-                                              n_layer=12, n_head=16, n_embd=1024, n_inner=4096)
+                                              n_layer=6, n_head=16, n_embd=1024, n_inner=4096)
         elif size == "large":
             return MIDIModelConfig.get_config(tokenizer_ver=tv, optimise_midi=o,
                                               n_layer=24, n_head=16, n_embd=1024, n_inner=4096)
