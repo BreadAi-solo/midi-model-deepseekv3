@@ -7,9 +7,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import tqdm
 from peft import PeftConfig, LoraModel, load_peft_weights, set_peft_model_state_dict
-from transformers import PhimoeModel as LlamaModel 
+from modeling_deepseek import DeepseekV3Model as LlamaModel 
 
-from transformers import PhimoeConfig as LlamaConfig
+from configuration_deepseek import DeepseekV3Config as LlamaConfig
 
 from transformers import DynamicCache, PretrainedConfig, PreTrainedModel
 
