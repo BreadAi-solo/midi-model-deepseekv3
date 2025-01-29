@@ -31,7 +31,7 @@ def file_ext(fname):
 class MidiDataset(Dataset):
     def __init__(self, midi_list, tokenizer: Union[MIDITokenizerV1, MIDITokenizerV2], max_len=8192, min_file_size=3000,
                  max_file_size=384000,
-                 aug=True, check_quality=False, rand_start=True):
+                 aug=True, check_quality=True, rand_start=True):
 
         self.tokenizer = tokenizer
         self.midi_list = midi_list
