@@ -87,7 +87,7 @@ class MIDIModelConfig(PretrainedConfig):
                                  num_key_value_heads=n_head,
                                  use_cache=False)
         net_token_config = LlamaConfig(vocab_size=tokenizer.vocab_size,
-                                       hidden_size=n_embd, num_attention_heads=n_head // 4,
+                                       hidden_size=n_embd, num_attention_heads=n_head // 2,
                                        num_hidden_layers=n_layer // 4, intermediate_size=n_inner // 4,
                                        moe_intermediate_size=n_inner // 4,
                                        pad_token_id=tokenizer.pad_id, 
@@ -98,7 +98,7 @@ class MIDIModelConfig(PretrainedConfig):
                                        "mscale_all_dim": 1.0, "mscale": 1.0, "beta_fast": 32, "beta_slow": 1},
                                        rope_theta=10000,
                                        routed_scaling_factor=2.5,
-                                       first_k_dense_replace=2,
+                                       first_k_dense_replace=3,
                                        topk_method="noaux_tc",
                                        topk_group=4,
                                        n_group=1,
