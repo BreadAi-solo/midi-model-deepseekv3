@@ -98,7 +98,7 @@ class MIDIModelConfig(PretrainedConfig):
                                        "mscale_all_dim": 1.0, "mscale": 1.0, "beta_fast": 32, "beta_slow": 1},
                                        rope_theta=10000,
                                        routed_scaling_factor=2.5,
-                                       first_k_dense_replace=3,
+                                       first_k_dense_replace=2,
                                        topk_method="noaux_tc",
                                        topk_group=4,
                                        n_group=1,
