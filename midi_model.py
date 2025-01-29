@@ -64,7 +64,7 @@ class MIDIModelConfig(PretrainedConfig):
         return json.dumps(d, indent=4)
 
     @staticmethod
-    def get_config(tokenizer_ver="v2", optimise_midi=True, n_layer=6, n_head=16, n_embd=1024, n_inner=4096):
+    def get_config(tokenizer_ver="v2", optimise_midi=True, n_layer=12, n_head=16, n_embd=1024, n_inner=4096):
         tokenizer = MIDITokenizer(tokenizer_ver)
         tokenizer.set_optimise_midi(optimise_midi)
         net_config = LlamaConfig(vocab_size=tokenizer.vocab_size,
@@ -81,10 +81,13 @@ class MIDIModelConfig(PretrainedConfig):
                                  n_group=2,
                                  rope_scaling={"type": "yarn", "factor": 2.0, "original_max_position_embeddings": 4096,
                                  "mscale_all_dim": 1.0, "mscale": 1.0, "beta_fast": 32, "beta_slow": 1},
+                                 rope_theta=10000,
+                                 routed_scaling_factor=2.5,
+                                 first_k_dense_replace=3,
                                  num_key_value_heads=n_head,
                                  use_cache=False)
         net_token_config = LlamaConfig(vocab_size=tokenizer.vocab_size,
-                                       hidden_size=n_embd, num_attention_heads=n_head // 2,
+                                       hidden_size=n_embd, num_attention_heads=n_head // 4,
                                        num_hidden_layers=n_layer // 4, intermediate_size=n_inner // 4,
                                        moe_intermediate_size=n_inner // 4,
                                        pad_token_id=tokenizer.pad_id, 
@@ -93,11 +96,14 @@ class MIDIModelConfig(PretrainedConfig):
                                        max_position_embeddings=8192,
                                        rope_scaling={"type": "yarn", "factor": 2.0, "original_max_position_embeddings": 4096,
                                        "mscale_all_dim": 1.0, "mscale": 1.0, "beta_fast": 32, "beta_slow": 1},
+                                       rope_theta=10000,
+                                       routed_scaling_factor=2.5,
+                                       first_k_dense_replace=3,
                                        topk_method="noaux_tc",
                                        topk_group=4,
                                        n_group=1,
                                        n_routed_experts=8,
-                                       num_key_value_heads=n_head,
+                                       num_key_value_heads=n_head // 4,
                                        use_cache=False)
         return MIDIModelConfig(tokenizer, net_config, net_token_config)
 
@@ -114,7 +120,7 @@ class MIDIModelConfig(PretrainedConfig):
             raise ValueError(f"Unknown tokenizer version {tv}")
         if size == "medium":
             return MIDIModelConfig.get_config(tokenizer_ver=tv, optimise_midi=o,
-                                              n_layer=6, n_head=16, n_embd=1024, n_inner=4096)
+                                              n_layer=12, n_head=16, n_embd=1024, n_inner=4096)
         elif size == "large":
             return MIDIModelConfig.get_config(tokenizer_ver=tv, optimise_midi=o,
                                               n_layer=24, n_head=16, n_embd=1024, n_inner=4096)
